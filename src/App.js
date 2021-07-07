@@ -3,7 +3,7 @@ import Math from './components/math'
 function App() {
   return (
     <div className="App">
-      <Math />
+      hello world
     </div>
   );
 }
