@@ -23,9 +23,53 @@ it('Header组件包含一个input框内容, 当用户输入时，会跟随变化
     inputElem.simulate('change', {
         target: { value: userInput }
     })
+    // 数据测试
     expect(wrapper.state('value')).toEqual(userInput)
-
+    // dom测试
     const newInputElem = wrapper.find("[data-test='input']");
     expect(newInputElem.prop('value')).toBe(userInput)
 })
+
+it('Header组件 input框输入回车时, 如果 input 无内容, 无操作', ()=> {
+    const fn = jest.fn();
+    const wrapper = shallow(<Header addUndoItem={fn} />)
+    const inputElem =  wrapper.find("[data-test='input']");
+    wrapper.setState({value:''})
+    inputElem.simulate('keyUp', {
+        keyCode: 13
+    });
+    expect(fn).not.toHaveBeenCalled();
+})
+
+it('Header组件 input框输入回车时, 如果 input 有内容, 函数应该被调用', ()=> {
+    const fn = jest.fn();
+    const wrapper = shallow(<Header addUndoItem={fn} />)
+    const inputElem =  wrapper.find("[data-test='input']");
+    const userInput = 'learning react'
+    wrapper.setState({value:userInput})
+    inputElem.simulate('keyUp', {
+        keyCode: 13
+    });
+    expect(fn).toHaveBeenCalled();
+    expect(fn).toHaveBeenLastCalledWith(userInput);
+})
+
+it('Header组件 input框输入回车时, 如果 input 有内容, 最后应该被清除掉', ()=> {
+    const fn = jest.fn();
+    const wrapper = shallow(<Header addUndoItem={fn} />)
+    const inputElem =  wrapper.find("[data-test='input']");
+    const userInput = 'learning react'
+    wrapper.setState({value:userInput})
+    inputElem.simulate('keyUp', {
+        keyCode: 13
+    });
+    const newInputElem = wrapper.find("[data-test='input']")
+    expect(newInputElem.prop('value')).toBe('')
+})
+
+
+
+
+
+
 
